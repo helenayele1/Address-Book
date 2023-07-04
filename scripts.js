@@ -37,22 +37,49 @@ function AddressBook() {
   }
   
   Contact.prototype.fullName = function() {
-    return this.firstName + " " + this.lastName;
+    return this.firstName + " " + this.lastName + ' ' + this.phoneNumber; //new 
   };
-
+  
   // User Interface Logic ---------
-let addressBook = new AddressBook();
+  let addressBook = new AddressBook();
+  
+  function listContacts(addressBookToDisplay) { //-> Address book
+    let contactsDiv = document.querySelector("div#contacts");
+    contactsDiv.innerText =  null;
+    const ul = document.createElement("ul");
+    Object.keys(addressBookToDisplay.contacts).forEach(function(key) {
+      const contact = addressBookToDisplay.findContact(key);
+      const li = document.createElement("li");
+      li.append(contact.fullName());
+      li.setAttribute("id", contact.id);
+      ul.append(li);
+    });
+    contactsDiv.append(ul);
+  }
 
-function handleFormSubmission(event) {
-  event.preventDefault();
-  const inputtedFirstName = document.querySelector("input#new-first-name").value;
-  const inputtedLastName = document.querySelector("input#new-last-name").value;
-  const inputtedPhoneNumber = document.querySelector("input#new-phone-number").value;
-  let newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
-  addressBook.addContact(newContact);
-  console.log(addressBook.contacts);
-}
+//   //function displayContactsDetails(event){
+//     const contact = addressBook.findContact(event.target.id); //-> currentId !== '1'; 
+//     document.querySelector(".first-name").innerText = contact.firstName;
+//     document.querySelector(".last-name").innerText = contact.lastName;
+//     document.querySelector(".phone-number").innerText = contact.phoneNumber;
+//     document.querySelector(".div#contact-details").removeAttribute("class");
+//     console.log("The id of this <li> is " + event.target.id + ".");
+//   }
 
-window.addEventListener("load", function (){
-  document.querySelector("form#new-contact").addEventListener("submit", handleFormSubmission);
-});
+  function handleFormSubmission(event) {
+    event.preventDefault();
+    const inputtedFirstName = document.querySelector("input#new-first-name").value;
+    const inputtedLastName = document.querySelector("input#new-last-name").value;
+    const inputtedPhoneNumber = document.querySelector("input#new-phone-number").value;
+    let newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
+    addressBook.addContact(newContact);
+    //displayContactsDetails();
+    listContacts(addressBook);
+  }
+  
+  window.addEventListener("load", function () {
+    document.querySelector("form#new-contact").addEventListener("submit", handleFormSubmission);
+    document.querySelector("div#contacts").addEventListener("click", listContacts);
+ 
+  });
+  
